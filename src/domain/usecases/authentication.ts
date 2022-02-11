@@ -1,5 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import type { AccountModel } from '../model/account-model'
+import type { AccountModel } from '../model'
 
 export type AuthenticationParams = {
   email: string
