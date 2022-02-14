@@ -18,7 +18,12 @@ const LoginComponent: React.FC = () => {
         <Input type="email" name="email" placeholder="Your email" />
         <Input type="password" name="password" placeholder="Your password" />
 
-        <button className={styles.submit} type="submit">
+        <button
+          className={styles.submit}
+          type="submit"
+          disabled
+          data-testid="submit"
+        >
           Login
         </button>
 
