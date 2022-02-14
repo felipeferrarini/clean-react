@@ -3,7 +3,9 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
 module.exports = {
   mode: 'development',
-  entry: './src/main/index.tsx',
+  entry: {
+    main: path.resolve(__dirname, 'src', 'main', 'index.tsx')
+  },
   output: {
     path: path.join(__dirname, 'public/dist'),
     publicPath: '/public/dist',
@@ -42,9 +44,12 @@ module.exports = {
     ]
   },
   devServer: {
-    contentBase: './public',
-    writeToDisk: true,
-    historyApiFallback: true
+    static: './public',
+    port: 3000,
+    historyApiFallback: true,
+    devMiddleware: {
+      writeToDisk: true
+    }
   },
   externals: {
     react: 'React',
