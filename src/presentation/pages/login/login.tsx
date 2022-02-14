@@ -8,36 +8,33 @@ import { FormContextProvider } from '@/presentation/contexts/form'
 import React from 'react'
 import styles from './login-styles.scss'
 
-const LoginComponent: React.FC = () => {
+export const Login: React.FC = () => {
   return (
     <div className={styles.login}>
       <LoginHeader />
-      <form className={styles.form}>
-        <h2>Login</h2>
 
-        <Input type="email" name="email" placeholder="Your email" />
-        <Input type="password" name="password" placeholder="Your password" />
+      <FormContextProvider>
+        <form className={styles.form}>
+          <h2>Login</h2>
 
-        <button
-          className={styles.submit}
-          type="submit"
-          disabled
-          data-testid="submit"
-        >
-          Login
-        </button>
+          <Input type="email" name="email" placeholder="Your email" />
+          <Input type="password" name="password" placeholder="Your password" />
 
-        <span className={styles.link}>Create an account</span>
+          <button
+            className={styles.submit}
+            type="submit"
+            disabled
+            data-testid="submit"
+          >
+            Login
+          </button>
 
-        <FormStatus />
-      </form>
+          <span className={styles.link}>Create an account</span>
+
+          <FormStatus />
+        </form>
+      </FormContextProvider>
       <Footer />
     </div>
   )
 }
-
-export const Login: React.FC = () => (
-  <FormContextProvider>
-    <LoginComponent />
-  </FormContextProvider>
-)
