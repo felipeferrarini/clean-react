@@ -4,10 +4,11 @@ import {
   Input,
   LoginHeader
 } from '@/presentation/components'
+import { FormContextProvider } from '@/presentation/contexts/form'
 import React from 'react'
 import styles from './login-styles.scss'
 
-export const Login: React.FC = () => {
+const LoginComponent: React.FC = () => {
   return (
     <div className={styles.login}>
       <LoginHeader />
@@ -29,3 +30,9 @@ export const Login: React.FC = () => {
     </div>
   )
 }
+
+export const Login: React.FC = () => (
+  <FormContextProvider>
+    <LoginComponent />
+  </FormContextProvider>
+)
