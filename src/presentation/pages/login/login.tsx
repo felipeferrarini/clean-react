@@ -18,7 +18,13 @@ export const Login: React.FC<Props> = ({ validation }) => {
     <div className={styles.login}>
       <LoginHeader />
 
-      <FormContextProvider validation={validation}>
+      <FormContextProvider
+        validation={validation}
+        initialValues={{
+          email: '',
+          password: ''
+        }}
+      >
         <form className={styles.form}>
           <h2>Login</h2>
 
