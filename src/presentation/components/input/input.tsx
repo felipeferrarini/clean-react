@@ -22,6 +22,14 @@ export const Input: React.FC<Props> = ({ name = '', ...props }) => {
     return '🟢'
   }
 
+  const getTitle = (): string => {
+    if (errors[name] && errors[name] !== '') {
+      return errors[name]
+    }
+
+    return 'OK!'
+  }
+
   return (
     <div className={styles.inputWrapper}>
       <input
@@ -33,7 +41,7 @@ export const Input: React.FC<Props> = ({ name = '', ...props }) => {
         onChange={onChange}
       />
       <span
-        title={errors[name]}
+        title={getTitle()}
         className={styles.status}
         data-testid={`${name}-status`}
       >
