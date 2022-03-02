@@ -35,7 +35,9 @@ export const FormContextProvider: React.FC<ProviderProps> = ({
       ...Object.keys(initialValues).reduce(
         (errors, key) => ({
           ...errors,
-          [key]: initialValues[key] ? '' : 'Required field'
+          [key]: initialValues[key]
+            ? validation.validate(key, initialValues[key])
+            : ''
         }),
         initialState.errors
       )
@@ -52,10 +54,12 @@ export const FormContextProvider: React.FC<ProviderProps> = ({
       values: {
         ...prev.values,
         [name]: value
+      },
+      errors: {
+        ...prev.errors,
+        [name]: validation.validate(name, value)
       }
     }))
-
-    validation.validate(name, value)
   }
 
   return (
