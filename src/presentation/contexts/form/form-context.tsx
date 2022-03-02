@@ -1,11 +1,11 @@
 import { Validation } from '@/presentation/protocols'
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useState } from 'react'
 
 export type StateProps<T extends object = {}> = {
   isLoading: boolean
   errors: T & { main?: string }
   values: T
-  setState: React.Dispatch<React.SetStateAction<StateProps>>
+  onChange: React.ChangeEventHandler<HTMLInputElement>
 }
 
 const initialState: StateProps = {
@@ -13,7 +13,7 @@ const initialState: StateProps = {
   errors: { main: '' },
   values: {},
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  setState: () => {}
+  onChange: () => {}
 }
 
 export const FormContext = createContext(initialState)
@@ -37,20 +37,29 @@ export const FormContextProvider: React.FC<ProviderProps> = ({
           ...errors,
           [key]: initialValues[key] ? '' : 'Required field'
         }),
-        {}
-      ),
-      main: ''
+        initialState.errors
+      )
     }
   })
 
-  console.log(state)
+  const onChange: React.ChangeEventHandler<HTMLInputElement> = (
+    event
+  ): void => {
+    const { name, value } = event.target
 
-  useEffect(() => {
-    validation.validate({ ...state.values })
-  }, [state.values])
+    setState(prev => ({
+      ...prev,
+      values: {
+        ...prev.values,
+        [name]: value
+      }
+    }))
+
+    validation.validate(name, value)
+  }
 
   return (
-    <FormContext.Provider value={{ ...state, setState }}>
+    <FormContext.Provider value={{ ...state, onChange }}>
       {children}
     </FormContext.Provider>
   )
