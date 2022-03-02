@@ -6,10 +6,23 @@ type Props = React.InputHTMLAttributes<HTMLInputElement>
 
 // eslint-disable-next-line react/prop-types
 export const Input: React.FC<Props> = ({ name = '', ...props }) => {
-  const { errors } = useFormContext()
+  const { errors, setState } = useFormContext()
 
-  const enableInput: React.FocusEventHandler<HTMLInputElement> = e => {
-    e.target.readOnly = false
+  const enableInput: React.FocusEventHandler<HTMLInputElement> = (
+    event
+  ): void => {
+    event.target.readOnly = false
+  }
+
+  const handleChange: React.ChangeEventHandler<HTMLInputElement> = (
+    event
+  ): void => {
+    setState(prev => ({
+      ...prev,
+      values: {
+        [event.target.name]: event.target.value
+      }
+    }))
   }
 
   const getStatus = (): string => {
@@ -22,7 +35,14 @@ export const Input: React.FC<Props> = ({ name = '', ...props }) => {
 
   return (
     <div className={styles.inputWrapper}>
-      <input {...props} name={name} readOnly onFocus={enableInput} />
+      <input
+        {...props}
+        data-testid={name}
+        name={name}
+        readOnly
+        onFocus={enableInput}
+        onChange={handleChange}
+      />
       <span
         title={errors[name]}
         className={styles.status}

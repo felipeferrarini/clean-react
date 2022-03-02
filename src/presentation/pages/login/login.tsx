@@ -5,15 +5,20 @@ import {
   LoginHeader
 } from '@/presentation/components'
 import { FormContextProvider } from '@/presentation/contexts/form'
+import { Validation } from '@/presentation/protocols'
 import React from 'react'
 import styles from './login-styles.scss'
 
-export const Login: React.FC = () => {
+type Props = {
+  validation: Validation
+}
+
+export const Login: React.FC<Props> = ({ validation }) => {
   return (
     <div className={styles.login}>
       <LoginHeader />
 
-      <FormContextProvider>
+      <FormContextProvider validation={validation}>
         <form className={styles.form}>
           <h2>Login</h2>
 
