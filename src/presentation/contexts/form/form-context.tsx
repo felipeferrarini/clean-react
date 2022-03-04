@@ -1,5 +1,5 @@
 import { Validation } from '@/presentation/protocols'
-import React, { createContext, useState } from 'react'
+import React, { createContext, useCallback, useEffect, useState } from 'react'
 
 type FormValues = {
   [field: string]: string
@@ -41,42 +41,49 @@ export const FormContextProvider = <Values extends FormValues = FormValues>({
 }: ProviderProps<Values>): JSX.Element => {
   const [state, setState] = useState<StateProps<Values>>({
     ...initialState,
-    values: initialValues,
-    errors: {
-      ...Object.keys(initialValues).reduce(
-        (errors, key) => ({
-          ...errors,
-          [key]: validation.validate(key, initialValues[key])
-        }),
-        initialState.errors as FormErrors<Values>
-      )
-    }
+    values: initialValues
   })
 
-  const onChange: React.ChangeEventHandler<HTMLInputElement> = (
-    event
-  ): void => {
-    const { name, value } = event.target
-
-    setState(prev => {
-      const values = { ...prev.values, [name]: value }
-      const errors = {
-        ...prev.errors,
-        [name]: validation.validate(name, value)
+  useEffect(() => {
+    setState(prev => ({
+      ...prev,
+      errors: {
+        ...Object.keys(initialValues).reduce(
+          (errors, key) => ({
+            ...errors,
+            [key]: validation.validate(key, initialValues[key])
+          }),
+          prev.errors as FormErrors<Values>
+        )
       }
-      const isValid = Object.keys(errors).reduce(
-        (isValid, key) => isValid && !errors[key],
-        true
-      )
+    }))
+  }, [])
 
-      return {
-        ...prev,
-        values,
-        errors,
-        isValid
-      }
-    })
-  }
+  const onChange: React.ChangeEventHandler<HTMLInputElement> = useCallback(
+    (event): void => {
+      const { name, value } = event.target
+
+      setState(prev => {
+        const values = { ...prev.values, [name]: value }
+        const errors = {
+          ...prev.errors,
+          [name]: validation.validate(name, value)
+        }
+        const isValid = Object.keys(errors).reduce(
+          (isValid, key) => isValid && !errors[key],
+          true
+        )
+
+        return {
+          ...prev,
+          values,
+          errors,
+          isValid
+        }
+      })
+    },
+    [validation]
+  )
 
   return (
     <FormContext.Provider value={{ ...state, onChange }}>
