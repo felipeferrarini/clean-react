@@ -27,7 +27,8 @@ const initalValues: FormValues = {
 
 export const Login: React.FC<Props> = ({ validation, authentication }) => {
   const handleSubmit = useCallback(async (values: FormValues) => {
-    await authentication.auth(values)
+    const account = await authentication.auth(values)
+    localStorage.setItem('accessToken', account.accessToken)
   }, [])
 
   return (
