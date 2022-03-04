@@ -40,7 +40,7 @@ export const Login: React.FC<Props> = ({ validation, authentication }) => {
         handleSubmit={handleSubmit}
       >
         {({ isValid, isLoading, onSubmit }) => (
-          <form className={styles.form} onSubmit={onSubmit}>
+          <form data-testid="form" className={styles.form} onSubmit={onSubmit}>
             <h2>Login</h2>
 
             <Input type="email" name="email" placeholder="Your email" />

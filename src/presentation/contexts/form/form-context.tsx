@@ -69,11 +69,13 @@ export const FormContextProvider = <Values extends FormValues = FormValues>({
   const onSubmit = useCallback<React.ChangeEventHandler<HTMLFormElement>>(
     async e => {
       e.preventDefault()
+      if (state.isLoading || !state.isValid) return
+
       setState(prev => ({ ...prev, isLoading: true }))
       await handleSubmit(state.values)
       setState(prev => ({ ...prev, isLoading: false }))
     },
-    [state.values]
+    [state.values, state.isLoading, state.isValid, handleSubmit]
   )
 
   return (
