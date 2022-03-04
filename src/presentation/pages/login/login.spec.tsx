@@ -24,7 +24,9 @@ type SutParams = {
   validationError: string
 }
 
-const history = createMemoryHistory()
+const history = createMemoryHistory({
+  initialEntries: ['/login']
+})
 
 const makeSut = (params?: SutParams): SutTypes => {
   const validationSpy = new ValidationSpy()
@@ -33,7 +35,7 @@ const makeSut = (params?: SutParams): SutTypes => {
   const authenticationSpy = new AuthenticationSpy()
 
   const sut = render(
-    <Router navigator={history} location="">
+    <Router navigator={history} location="/login">
       <Login validation={validationSpy} authentication={authenticationSpy} />
     </Router>
   )
@@ -231,6 +233,7 @@ describe('Login component', () => {
       'accessToken',
       authenticationSpy.account.accessToken
     )
+    expect(history.location.pathname).toBe('/')
   })
 
   test('Should go to signup page', () => {
