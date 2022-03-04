@@ -36,7 +36,7 @@ describe('Login component', () => {
     expect(erroWrapper.childElementCount).toBe(0)
 
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement
-    expect(submitButton.disabled).toBe(true)
+    expect(submitButton.disabled).toBe(false)
 
     const emailStatus = sut.getByTestId('email-status')
     expect(emailStatus.title).toBe('OK!')
@@ -113,5 +113,23 @@ describe('Login component', () => {
     const emailStatus = sut.getByTestId('email-status')
     expect(emailStatus.title).toBe('OK!')
     expect(emailStatus.textContent).toBe('🟢')
+  })
+
+  test('Should enable submit button if form is valid', () => {
+    const { sut, validationSpy } = makeSut()
+    validationSpy.errorMessage = null
+
+    const emailInput = sut.getByTestId('email') as HTMLInputElement
+    fireEvent.input(emailInput, {
+      target: { value: faker.internet.email() }
+    })
+
+    const passwordInput = sut.getByTestId('password') as HTMLInputElement
+    fireEvent.input(passwordInput, {
+      target: { value: faker.internet.password() }
+    })
+
+    const submitButton = sut.getByTestId('submit') as HTMLButtonElement
+    expect(submitButton.disabled).toBe(false)
   })
 })
