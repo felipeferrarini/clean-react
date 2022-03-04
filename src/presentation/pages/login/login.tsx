@@ -39,7 +39,7 @@ export const Login: React.FC<Props> = ({ validation, authentication }) => {
         initialValues={initalValues}
         handleSubmit={handleSubmit}
       >
-        {({ isValid, onSubmit }) => (
+        {({ isValid, isLoading, onSubmit }) => (
           <form className={styles.form} onSubmit={onSubmit}>
             <h2>Login</h2>
 
@@ -53,7 +53,7 @@ export const Login: React.FC<Props> = ({ validation, authentication }) => {
             <button
               className={styles.submit}
               type="submit"
-              disabled={!isValid}
+              disabled={!isValid || isLoading}
               data-testid="submit"
             >
               Login
