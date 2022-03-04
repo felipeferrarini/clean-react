@@ -14,9 +14,13 @@ type SutTypes = {
   validationSpy: ValidationSpy
 }
 
-const makeSut = (): SutTypes => {
+type SutParams = {
+  validationError: string
+}
+
+const makeSut = (params?: SutParams): SutTypes => {
   const validationSpy = new ValidationSpy()
-  validationSpy.errorMessage = faker.random.words()
+  validationSpy.errorMessage = params?.validationError
   const sut = render(<Login validation={validationSpy} />)
 
   return {
@@ -29,20 +33,24 @@ describe('Login component', () => {
   afterEach(cleanup)
 
   test('should start with initial state', () => {
-    const { sut, validationSpy } = makeSut()
-    validationSpy.errorMessage = ''
+    const validationError = faker.random.words()
+    const { sut } = makeSut({
+      validationError
+    })
 
     const erroWrapper = sut.getByTestId('error-wrapper')
     expect(erroWrapper.childElementCount).toBe(0)
 
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement
-    expect(submitButton.disabled).toBe(false)
+    expect(submitButton.disabled).toBe(true)
 
     const emailStatus = sut.getByTestId('email-status')
-    expect(emailStatus.title).toBe('OK!')
+    expect(emailStatus.title).toBe(validationError)
+    expect(emailStatus.textContent).toBe('🔴')
 
     const passwordStatus = sut.getByTestId('password-status')
-    expect(passwordStatus.title).toBe('OK!')
+    expect(passwordStatus.title).toBe(validationError)
+    expect(emailStatus.textContent).toBe('🔴')
   })
 
   test('should call Validation with correct email', () => {
@@ -65,19 +73,21 @@ describe('Login component', () => {
     expect(validationSpy.fieldValue).toBe(password)
   })
 
-  it('Should show email error if validation fails', () => {
-    const { sut, validationSpy } = makeSut()
+  test('Should show email error if validation fails', () => {
+    const validationError = faker.random.words()
+    const { sut } = makeSut({ validationError })
 
     const emailInput = sut.getByTestId('email') as HTMLInputElement
     fireEvent.input(emailInput, { target: { value: faker.internet.email() } })
 
     const emailStatus = sut.getByTestId('email-status')
-    expect(emailStatus.title).toBe(validationSpy.errorMessage)
+    expect(emailStatus.title).toBe(validationError)
     expect(emailStatus.textContent).toBe('🔴')
   })
 
-  it('Should show password error if validation fails', () => {
-    const { sut, validationSpy } = makeSut()
+  test('Should show password error if validation fails', () => {
+    const validationError = faker.random.words()
+    const { sut } = makeSut({ validationError })
 
     const passwordInput = sut.getByTestId('password') as HTMLInputElement
     fireEvent.input(passwordInput, {
@@ -85,13 +95,13 @@ describe('Login component', () => {
     })
 
     const passwordStatus = sut.getByTestId('password-status')
-    expect(passwordStatus.title).toBe(validationSpy.errorMessage)
+    expect(passwordStatus.title).toBe(validationError)
     expect(passwordStatus.textContent).toBe('🔴')
   })
 
-  it('Should show valid password state if Validation succeeds', () => {
-    const { sut, validationSpy } = makeSut()
-    validationSpy.errorMessage = null
+  test('Should show valid password state if Validation succeeds', () => {
+    const { sut } = makeSut()
+
     const passwordInput = sut.getByTestId('password') as HTMLInputElement
     fireEvent.input(passwordInput, {
       target: { value: faker.internet.password() }
@@ -102,9 +112,9 @@ describe('Login component', () => {
     expect(passwordStatus.textContent).toBe('🟢')
   })
 
-  it('Should show valid email state if Validation succeeds', () => {
-    const { sut, validationSpy } = makeSut()
-    validationSpy.errorMessage = null
+  test('Should show valid email state if Validation succeeds', () => {
+    const { sut } = makeSut()
+
     const emailInput = sut.getByTestId('email') as HTMLInputElement
     fireEvent.input(emailInput, {
       target: { value: faker.internet.email() }
@@ -116,8 +126,7 @@ describe('Login component', () => {
   })
 
   test('Should enable submit button if form is valid', () => {
-    const { sut, validationSpy } = makeSut()
-    validationSpy.errorMessage = null
+    const { sut } = makeSut()
 
     const emailInput = sut.getByTestId('email') as HTMLInputElement
     fireEvent.input(emailInput, {
