@@ -11,6 +11,7 @@ type FormErrors<Values> = {
 
 export type StateProps<Values> = {
   isLoading: boolean
+  isValid: boolean
   errors: FormErrors<Values> & { main?: string }
   values: Values
   onChange: React.ChangeEventHandler<HTMLInputElement>
@@ -18,6 +19,7 @@ export type StateProps<Values> = {
 
 const initialState: StateProps<any> = {
   isLoading: false,
+  isValid: false,
   errors: { main: '' },
   values: {},
   // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -44,9 +46,7 @@ export const FormContextProvider = <Values extends FormValues = FormValues>({
       ...Object.keys(initialValues).reduce(
         (errors, key) => ({
           ...errors,
-          [key]: initialValues[key]
-            ? validation.validate(key, initialValues[key])
-            : ''
+          [key]: validation.validate(key, initialValues[key])
         }),
         initialState.errors as FormErrors<Values>
       )
@@ -58,17 +58,24 @@ export const FormContextProvider = <Values extends FormValues = FormValues>({
   ): void => {
     const { name, value } = event.target
 
-    setState(prev => ({
-      ...prev,
-      values: {
-        ...prev.values,
-        [name]: value
-      },
-      errors: {
+    setState(prev => {
+      const values = { ...prev.values, [name]: value }
+      const errors = {
         ...prev.errors,
         [name]: validation.validate(name, value)
       }
-    }))
+      const isValid = Object.keys(errors).reduce(
+        (isValid, key) => isValid && !errors[key],
+        true
+      )
+
+      return {
+        ...prev,
+        values,
+        errors,
+        isValid
+      }
+    })
   }
 
   return (

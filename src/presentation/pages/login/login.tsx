@@ -25,7 +25,7 @@ export const Login: React.FC<Props> = ({ validation }) => {
           password: ''
         }}
       >
-        {({ errors }) => (
+        {({ isValid }) => (
           <form className={styles.form}>
             <h2>Login</h2>
 
@@ -39,7 +39,7 @@ export const Login: React.FC<Props> = ({ validation }) => {
             <button
               className={styles.submit}
               type="submit"
-              disabled={!!errors.email || !!errors.password}
+              disabled={!isValid}
               data-testid="submit"
             >
               Login
