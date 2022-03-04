@@ -1,14 +1,22 @@
 import { Validation } from '@/presentation/protocols'
 import React, { createContext, useState } from 'react'
 
-export type StateProps<T extends object = {}> = {
+type FormValues = {
+  [field: string]: string
+}
+
+type FormErrors<Values> = {
+  [key in keyof Values]: string
+}
+
+export type StateProps<Values> = {
   isLoading: boolean
-  errors: T & { main?: string }
-  values: T
+  errors: FormErrors<Values> & { main?: string }
+  values: Values
   onChange: React.ChangeEventHandler<HTMLInputElement>
 }
 
-const initialState: StateProps = {
+const initialState: StateProps<any> = {
   isLoading: false,
   errors: { main: '' },
   values: {},
@@ -18,17 +26,18 @@ const initialState: StateProps = {
 
 export const FormContext = createContext(initialState)
 
-type ProviderProps = {
+type ProviderProps<Values> = {
   validation: Validation
-  initialValues: object
+  initialValues: Values
+  children: React.ReactNode | ((props: StateProps<Values>) => React.ReactNode)
 }
 
-export const FormContextProvider: React.FC<ProviderProps> = ({
+export const FormContextProvider = <Values extends FormValues = FormValues>({
   children,
   validation,
   initialValues
-}) => {
-  const [state, setState] = useState<StateProps>({
+}: ProviderProps<Values>): JSX.Element => {
+  const [state, setState] = useState<StateProps<Values>>({
     ...initialState,
     values: initialValues,
     errors: {
@@ -39,7 +48,7 @@ export const FormContextProvider: React.FC<ProviderProps> = ({
             ? validation.validate(key, initialValues[key])
             : ''
         }),
-        initialState.errors
+        initialState.errors as FormErrors<Values>
       )
     }
   })
@@ -64,7 +73,9 @@ export const FormContextProvider: React.FC<ProviderProps> = ({
 
   return (
     <FormContext.Provider value={{ ...state, onChange }}>
-      {children}
+      {children instanceof Function
+        ? children({ ...state, onChange })
+        : children}
     </FormContext.Provider>
   )
 }
