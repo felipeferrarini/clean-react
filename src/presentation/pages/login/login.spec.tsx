@@ -150,7 +150,8 @@ describe('Login component', () => {
   test('Should enable submit button if form is valid', () => {
     const { sut } = makeSut()
 
-    simulateValidSubmit(sut)
+    populateEmailField(sut)
+    populatePasswordField(sut)
     const submitButton = sut.getByTestId('submit') as HTMLButtonElement
     expect(submitButton.disabled).toBe(false)
   })
@@ -174,5 +175,13 @@ describe('Login component', () => {
       email,
       password
     })
+  })
+
+  test('Should call Authentication only once', () => {
+    const { sut, authenticationSpy } = makeSut()
+
+    simulateValidSubmit(sut)
+    simulateValidSubmit(sut)
+    expect(authenticationSpy.callsCount).toBe(1)
   })
 })
