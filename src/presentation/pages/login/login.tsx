@@ -1,3 +1,4 @@
+import { Authentication } from '@/domain/usecases'
 import {
   Footer,
   FormStatus,
@@ -11,11 +12,17 @@ import styles from './login-styles.scss'
 
 type Props = {
   validation: Validation
+  authentication: Authentication
 }
 
-export const Login: React.FC<Props> = ({ validation }) => {
-  const handleSubmit = useCallback(async () => {
-    await new Promise(resolve => setTimeout(resolve, 1000))
+type FormValues = {
+  email: string
+  password: string
+}
+
+export const Login: React.FC<Props> = ({ validation, authentication }) => {
+  const handleSubmit = useCallback(async (values: FormValues) => {
+    await authentication.auth(values)
   }, [])
 
   return (
@@ -28,9 +35,7 @@ export const Login: React.FC<Props> = ({ validation }) => {
           email: '',
           password: ''
         }}
-        handleSubmit={async values => {
-          await new Promise(resolve => setTimeout(resolve, 1000))
-        }}
+        handleSubmit={handleSubmit}
       >
         {({ isValid, onSubmit }) => (
           <form className={styles.form} onSubmit={onSubmit}>

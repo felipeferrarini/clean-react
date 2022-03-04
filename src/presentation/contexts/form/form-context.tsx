@@ -73,7 +73,7 @@ export const FormContextProvider = <Values extends FormValues = FormValues>({
       await handleSubmit(state.values)
       setState(prev => ({ ...prev, isLoading: false }))
     },
-    []
+    [state.values]
   )
 
   return (
