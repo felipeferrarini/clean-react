@@ -25,25 +25,31 @@ export const Login: React.FC<Props> = ({ validation }) => {
           password: ''
         }}
       >
-        <form className={styles.form}>
-          <h2>Login</h2>
+        {({ errors }) => (
+          <form className={styles.form}>
+            <h2>Login</h2>
 
-          <Input type="email" name="email" placeholder="Your email" />
-          <Input type="password" name="password" placeholder="Your password" />
+            <Input type="email" name="email" placeholder="Your email" />
+            <Input
+              type="password"
+              name="password"
+              placeholder="Your password"
+            />
 
-          <button
-            className={styles.submit}
-            type="submit"
-            disabled
-            data-testid="submit"
-          >
-            Login
-          </button>
+            <button
+              className={styles.submit}
+              type="submit"
+              disabled={!!errors.email || !!errors.password}
+              data-testid="submit"
+            >
+              Login
+            </button>
 
-          <span className={styles.link}>Create an account</span>
+            <span className={styles.link}>Create an account</span>
 
-          <FormStatus />
-        </form>
+            <FormStatus />
+          </form>
+        )}
       </FormContextProvider>
       <Footer />
     </div>
