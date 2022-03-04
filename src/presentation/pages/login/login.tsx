@@ -6,7 +6,7 @@ import {
 } from '@/presentation/components'
 import { FormContextProvider } from '@/presentation/contexts/form'
 import { Validation } from '@/presentation/protocols'
-import React from 'react'
+import React, { useCallback } from 'react'
 import styles from './login-styles.scss'
 
 type Props = {
@@ -14,6 +14,10 @@ type Props = {
 }
 
 export const Login: React.FC<Props> = ({ validation }) => {
+  const handleSubmit = useCallback(async () => {
+    await new Promise(resolve => setTimeout(resolve, 1000))
+  }, [])
+
   return (
     <div className={styles.login}>
       <LoginHeader />
@@ -24,9 +28,12 @@ export const Login: React.FC<Props> = ({ validation }) => {
           email: '',
           password: ''
         }}
+        handleSubmit={async values => {
+          await new Promise(resolve => setTimeout(resolve, 1000))
+        }}
       >
-        {({ isValid }) => (
-          <form className={styles.form}>
+        {({ isValid, onSubmit }) => (
+          <form className={styles.form} onSubmit={onSubmit}>
             <h2>Login</h2>
 
             <Input type="email" name="email" placeholder="Your email" />

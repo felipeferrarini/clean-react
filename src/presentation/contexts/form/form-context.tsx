@@ -1,45 +1,26 @@
-import { Validation } from '@/presentation/protocols'
 import React, { createContext, useCallback, useEffect, useState } from 'react'
+import { FormErrors, FormProps, FormProviderParams, FormValues } from './types'
 
-type FormValues = {
-  [field: string]: string
-}
-
-type FormErrors<Values> = {
-  [key in keyof Values]: string
-}
-
-export type StateProps<Values> = {
-  isLoading: boolean
-  isValid: boolean
-  errors: FormErrors<Values> & { main?: string }
-  values: Values
-  onChange: React.ChangeEventHandler<HTMLInputElement>
-}
-
-const initialState: StateProps<any> = {
+const initialState: FormProps<any> = {
   isLoading: false,
   isValid: false,
   errors: { main: '' },
   values: {},
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  onChange: () => {}
+  onChange: () => {},
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onSubmit: () => {}
 }
 
 export const FormContext = createContext(initialState)
 
-type ProviderProps<Values> = {
-  validation: Validation
-  initialValues: Values
-  children: React.ReactNode | ((props: StateProps<Values>) => React.ReactNode)
-}
-
 export const FormContextProvider = <Values extends FormValues = FormValues>({
   children,
   validation,
-  initialValues
-}: ProviderProps<Values>): JSX.Element => {
-  const [state, setState] = useState<StateProps<Values>>({
+  initialValues,
+  handleSubmit
+}: FormProviderParams<Values>): JSX.Element => {
+  const [state, setState] = useState<FormProps<Values>>({
     ...initialState,
     values: initialValues
   })
@@ -85,10 +66,20 @@ export const FormContextProvider = <Values extends FormValues = FormValues>({
     [validation]
   )
 
+  const onSubmit = useCallback<React.ChangeEventHandler<HTMLFormElement>>(
+    async e => {
+      e.preventDefault()
+      setState(prev => ({ ...prev, isLoading: true }))
+      await handleSubmit(state.values)
+      setState(prev => ({ ...prev, isLoading: false }))
+    },
+    []
+  )
+
   return (
-    <FormContext.Provider value={{ ...state, onChange }}>
+    <FormContext.Provider value={{ ...state, onChange, onSubmit }}>
       {children instanceof Function
-        ? children({ ...state, onChange })
+        ? children({ ...state, onChange, onSubmit })
         : children}
     </FormContext.Provider>
   )

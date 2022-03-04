@@ -1,8 +1,9 @@
 import { useContext } from 'react'
-import { FormContext, StateProps } from '../form'
+import { FormContext } from '../form'
+import { FormProps } from '../form/types'
 
-export const useFormContext = <T = {}>(): StateProps<T> => {
-  const context = useContext(FormContext) as StateProps<T>
+export const useFormContext = <T = {}>(): FormProps<T> => {
+  const context = useContext(FormContext) as FormProps<T>
   if (!context) {
     throw new Error('useFormContext must be used within a FormProvider')
   }
