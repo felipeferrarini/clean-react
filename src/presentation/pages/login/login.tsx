@@ -20,6 +20,11 @@ type FormValues = {
   password: string
 }
 
+const initalValues: FormValues = {
+  email: '',
+  password: ''
+}
+
 export const Login: React.FC<Props> = ({ validation, authentication }) => {
   const handleSubmit = useCallback(async (values: FormValues) => {
     await authentication.auth(values)
@@ -31,10 +36,7 @@ export const Login: React.FC<Props> = ({ validation, authentication }) => {
 
       <FormContextProvider
         validation={validation}
-        initialValues={{
-          email: '',
-          password: ''
-        }}
+        initialValues={initalValues}
         handleSubmit={handleSubmit}
       >
         {({ isValid, onSubmit }) => (
