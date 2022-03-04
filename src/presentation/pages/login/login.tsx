@@ -8,6 +8,7 @@ import {
 import { FormContextProvider } from '@/presentation/contexts/form'
 import { Validation } from '@/presentation/protocols'
 import React, { useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import styles from './login-styles.scss'
 
 type Props = {
@@ -60,7 +61,9 @@ export const Login: React.FC<Props> = ({ validation, authentication }) => {
               Login
             </button>
 
-            <span className={styles.link}>Create an account</span>
+            <Link data-testid="signup" to="/signup" className={styles.link}>
+              Create an account
+            </Link>
 
             <FormStatus />
           </form>
