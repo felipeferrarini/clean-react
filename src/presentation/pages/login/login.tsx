@@ -8,7 +8,7 @@ import {
 import { FormContextProvider } from '@/presentation/contexts/form'
 import { Validation } from '@/presentation/protocols'
 import React, { useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import styles from './login-styles.scss'
 
 type Props = {
@@ -27,9 +27,13 @@ const initalValues: FormValues = {
 }
 
 export const Login: React.FC<Props> = ({ validation, authentication }) => {
+  const navigate = useNavigate()
+
   const handleSubmit = useCallback(async (values: FormValues) => {
     const account = await authentication.auth(values)
     localStorage.setItem('accessToken', account.accessToken)
+
+    navigate('/', { replace: true })
   }, [])
 
   return (
