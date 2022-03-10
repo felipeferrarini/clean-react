@@ -1,17 +1,30 @@
 import { FieldValidationSpy } from '@/validation/test'
 import { ValidationComposite } from './validation-composite'
 
+type SutTypes = {
+  sut: ValidationComposite
+  fieldValidationsSpies: FieldValidationSpy[]
+}
+
+const makeSut = (): SutTypes => {
+  const fieldValidationsSpies = [
+    new FieldValidationSpy('any_field'),
+    new FieldValidationSpy('any_field')
+  ]
+  const sut = new ValidationComposite(fieldValidationsSpies)
+  return {
+    sut,
+    fieldValidationsSpies
+  }
+}
+
 describe('ValidationComposite', () => {
   it('Should return error if any validation fails', () => {
-    const fieldValidationSpy = new FieldValidationSpy('any_field')
-    fieldValidationSpy.error = new Error('first_error_message')
-    const fieldValidationSpy2 = new FieldValidationSpy('any_field')
-    fieldValidationSpy2.error = new Error('second_error_message')
+    const { sut, fieldValidationsSpies } = makeSut()
 
-    const sut = new ValidationComposite([
-      fieldValidationSpy,
-      fieldValidationSpy2
-    ])
+    fieldValidationsSpies[0].error = new Error('first_error_message')
+    fieldValidationsSpies[1].error = new Error('second_error_message')
+
     const error = sut.validate('any_field', 'any_value')
     expect(error).toBe('first_error_message')
   })
