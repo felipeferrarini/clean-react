@@ -24,4 +24,19 @@ describe('ValidationBuilder', () => {
     const validations = ValidationBuilder.field(fieldName).min(5).build()
     expect(validations).toEqual([new MinLengthValidation(fieldName, 5)])
   })
+
+  test('should return a list of validations', () => {
+    const fieldName = faker.database.column()
+    const length = faker.datatype.number()
+    const validations = ValidationBuilder.field(fieldName)
+      .required()
+      .min(length)
+      .email()
+      .build()
+    expect(validations).toEqual([
+      new RequiredFieldValidation(fieldName),
+      new MinLengthValidation(fieldName, length),
+      new EmailValidation(fieldName)
+    ])
+  })
 })
