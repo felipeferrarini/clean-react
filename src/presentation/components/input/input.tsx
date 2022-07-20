@@ -1,11 +1,12 @@
-import { useFormContext } from '@/presentation/contexts/hooks'
+import { useFormContext } from '@/presentation/contexts/form'
 import React from 'react'
 import styles from './input-styles.scss'
 
-type Props = React.InputHTMLAttributes<HTMLInputElement>
+type Props = React.InputHTMLAttributes<HTMLInputElement> & {
+  name: string
+}
 
-// eslint-disable-next-line react/prop-types
-export const Input: React.FC<Props> = ({ name = '', ...props }) => {
+export const Input = ({ name = '', ...props }: Props): JSX.Element => {
   const { errors, onChange } = useFormContext()
 
   const enableInput: React.FocusEventHandler<HTMLInputElement> = (
