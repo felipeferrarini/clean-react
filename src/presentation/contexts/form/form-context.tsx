@@ -1,4 +1,10 @@
-import React, { createContext, useCallback, useEffect, useState } from 'react'
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState
+} from 'react'
 import { FormErrors, FormProps, FormProviderParams, FormValues } from './types'
 
 const initialState: FormProps<any> = {
@@ -88,9 +94,14 @@ export const FormContextProvider = <Values extends FormValues = FormValues>({
 
   return (
     <FormContext.Provider value={{ ...state, onChange, onSubmit }}>
-      {children instanceof Function
-        ? children({ ...state, onChange, onSubmit })
-        : children}
+      {children instanceof Function &&
+        children({ ...state, onChange, onSubmit })}
     </FormContext.Provider>
   )
+}
+
+export const useFormContext = <T extends {} = {}>(): FormProps<T> => {
+  const context = useContext(FormContext) as FormProps<T>
+
+  return context
 }
