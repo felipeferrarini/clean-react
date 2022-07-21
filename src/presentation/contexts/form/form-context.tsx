@@ -101,7 +101,5 @@ export const FormContextProvider = <Values extends FormValues = FormValues>({
 }
 
 export const useFormContext = <T extends {} = {}>(): FormProps<T> => {
-  const context = useContext(FormContext) as FormProps<T>
-
-  return context
+  return useContext(FormContext) as FormProps<T>
 }
