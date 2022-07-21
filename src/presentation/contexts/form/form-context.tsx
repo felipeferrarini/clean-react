@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import React, {
   createContext,
   useCallback,
@@ -12,9 +13,7 @@ const initialState: FormProps<any> = {
   isValid: false,
   errors: { main: '' },
   values: {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onChange: () => {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
   onSubmit: () => {}
 }
 
